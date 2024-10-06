@@ -1,0 +1,1 @@
+D:\Programming\opt\mongodb-8.0\bin\mongod.exe --dbpath="D:\Programming\opt\mongo-db\data\db"
