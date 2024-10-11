@@ -4,7 +4,7 @@ import {TanStackRouterDevtools} from '@tanstack/router-devtools'
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import {Container, CssBaseline} from '@mui/material';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -21,7 +21,11 @@ function RootComponent() {
     <>
       <ThemeProvider theme={theme} defaultMode="dark">
         <Header></Header>
-        <Outlet/>
+        <main>
+          <Container>
+            <Outlet />
+          </Container>
+        </main>
         <Footer></Footer>
         <TanStackRouterDevtools position="bottom-right"/>
         <CssBaseline />

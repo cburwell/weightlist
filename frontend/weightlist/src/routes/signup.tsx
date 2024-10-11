@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import {Box} from "@mui/material";
 
 export const Route = createFileRoute('/signup')({
   component: SignupComponent,
@@ -7,8 +8,8 @@ export const Route = createFileRoute('/signup')({
 
 function SignupComponent() {
   return (
-    <div className="p-2">
+    <Box>
       <h3>Sign up</h3>
-    </div>
+    </Box>
   )
 }
