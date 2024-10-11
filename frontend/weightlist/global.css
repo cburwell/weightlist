@@ -1,3 +1,7 @@
 .spacer {
     flex-grow: 1;
 }
+
+& .MuiToolbar-root {
+    gap: 10px;
+}

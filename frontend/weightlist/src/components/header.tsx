@@ -41,6 +41,17 @@ export default function Header() {
     setAnchorElUser(null);
   };
 
+  const toggleMode = () => {
+    if (mode == "dark") {
+      setMode("light");
+      modeIcon = <LightMode/>;
+    }
+    else {
+      setMode("dark");
+      modeIcon = <DarkMode/>;
+    }
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -144,17 +155,14 @@ export default function Header() {
             ))}
           </Box>
           <Box>
-            <FormControl>
-              <FormLabel id="theme-toggle">{modeIcon}</FormLabel>
-              <Switch
-                name="theme-toggle"
-                checked={mode == "dark"}
-                onChange={(event) => {
-                  setMode(mode == "dark" ? "light" : "dark");
-                  modeIcon = mode == "dark" ? <LightMode/> : <DarkMode/>;
-                }}
-              />
-            </FormControl>
+            <IconButton
+              size="large"
+              aria-label="light / dark mode toggle"
+              onClick={toggleMode}
+              color="inherit"
+            >
+              {modeIcon}
+            </IconButton>
           </Box>
           <Box sx={{flexGrow: 0}}>
             <Tooltip title="Open settings">
