@@ -37,22 +37,21 @@ public class Workout {
         this.description = description;
     }
 
-    public ArrayList<String> getExercises() {
+    public ArrayList<String> getExerciseIds() {
         return exerciseIds;
     }
 
-    public void setExercises(ArrayList<String> exerciseIds) {
+    public void setExerciseIds(ArrayList<String> exerciseIds) {
         this.exerciseIds = exerciseIds;
     }
 
-    public void addExercise(String exerciseId) {
+    public void addExerciseId(String exerciseId) {
         this.exerciseIds.add(exerciseId);
     }
 
-    public void removeExercise(String exerciseId) {
+    public void removeExerciseId(String exerciseId) {
         this.exerciseIds.remove(exerciseId);
     }
-
 
     public ArrayList<String> getTags() {
         return tags;

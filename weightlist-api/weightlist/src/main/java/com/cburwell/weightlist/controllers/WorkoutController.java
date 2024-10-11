@@ -16,32 +16,34 @@ public class WorkoutController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
+    @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/workouts")
     List<Workout> all() {
-        System.out.println("In workouts");
-        System.out.println(repository.findAll());
         return repository.findAll();
     }
     // end::get-aggregate-root[]
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @PostMapping("/workouts")
     Workout newWorkout(@RequestBody Workout newWorkout) {
         return repository.save(newWorkout);
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/workouts/{id}")
     Workout one(@PathVariable Long id) {
         return repository.findById(id.toString())
                 .orElseThrow(() -> new RuntimeException("Can't find workout: " + id));
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @PutMapping("/workouts/{id}")
     Workout replaceWorkout(@RequestBody Workout newWorkout, @PathVariable Long id) {
         return repository.findById(id.toString())
                 .map(workout -> {
                     workout.setName(newWorkout.getName());
                     workout.setDescription(newWorkout.getDescription());
-                    workout.setExercises(newWorkout.getExercises());
+                    workout.setExerciseIds(newWorkout.getExerciseIds());
                     workout.setTags(newWorkout.getTags());
                     return repository.save(workout);
                 })
@@ -50,6 +52,7 @@ public class WorkoutController {
                 });
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @DeleteMapping("/workouts/{id}")
     void deleteWorkout(@PathVariable Long id) {
         repository.deleteById(id.toString());
