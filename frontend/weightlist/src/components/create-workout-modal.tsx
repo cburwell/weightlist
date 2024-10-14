@@ -1,19 +1,21 @@
 import {
   Autocomplete,
-  Box,
   Button,
   Chip,
   FormControl,
   InputLabel,
-  ListItem, MenuItem,
+  ListItem,
+  MenuItem,
   Modal,
-  Select, SelectChangeEvent,
+  Select,
+  SelectChangeEvent,
+  Stack,
   TextField,
   Typography
 } from "@mui/material";
 import * as React from "react";
-import AddIcon from "@mui/icons-material/Add";
 import {useEffect, useState} from "react";
+import AddIcon from "@mui/icons-material/Add";
 import {api} from "../../static/js/api";
 
 interface ChipData {
@@ -25,11 +27,11 @@ interface ChipData {
 export default function WorkoutModal() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [chipData, setChipData] = React.useState<readonly ChipData[]>([
-    { key: 0, label: 'Angular' },
-    { key: 1, label: 'jQuery' },
-    { key: 2, label: 'Polymer' },
-    { key: 3, label: 'React' },
-    { key: 4, label: 'Vue.js' },
+    {key: 0, label: 'Angular'},
+    {key: 1, label: 'jQuery'},
+    {key: 2, label: 'Polymer'},
+    {key: 3, label: 'React'},
+    {key: 4, label: 'Vue.js'},
   ]);
   const [exercise, setExercise] = React.useState('');
   const [tags, setTags] = useState<Tag[]>([]);
@@ -69,13 +71,13 @@ export default function WorkoutModal() {
         open={modalOpen}
         onClose={handleModalClose}
       >
-        <Box sx={{
+        <Stack spacing={4} sx={{
           zIndex: 'modal',
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 600,
+          width: "auto",
           bgcolor: "background.paper",
           border: "2px solid #000",
           boxShadow: 24,
@@ -87,11 +89,16 @@ export default function WorkoutModal() {
           <Typography variant="body2" id="create-new-workout" className="modal-description">
             Add details below to create your new workout.
           </Typography>
-          <FormControl>
-            <TextField required label="Required" defaultValue="Enter name..." />
-            <TextField label="Required" defaultValue="Enter description..." />
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-              <InputLabel id="demo-select-small-label">Exercise</InputLabel>
+          <FormControl
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "40px",
+            }}>
+            <TextField required label="Name" placeholder="Enter name..."/>
+            <TextField label="Description" placeholder="Enter description..."/>
+            <FormControl sx={{m: 1, minWidth: 120}}>
+              <InputLabel id="exercise-label">Exercise</InputLabel>
               <Select
                 labelId="exercise-select-label"
                 id="exercise-select"
@@ -107,17 +114,7 @@ export default function WorkoutModal() {
                 <MenuItem value={3}>OHP</MenuItem>
               </Select>
             </FormControl>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                listStyle: 'none',
-                p: 0.5,
-                m: 0,
-              }}
-              component="ul"
-            >
+            <Stack direction="row">
               {chipData.map((data) => {
                 return (
                   <ListItem key={data.key}>
@@ -128,16 +125,23 @@ export default function WorkoutModal() {
                   </ListItem>
                 );
               })}
-            </Box>
+            </Stack>
             <Autocomplete
-              disablePortal
+              multiple
+              id="tags-standard"
               options={tags as Tag[]}
-              sx={{ width: 300 }}
               getOptionLabel={option => option.name}
-              renderInput={(params) => <TextField {...params} label="Tags" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label="Tags"
+                  placeholder="Enter tag..."
+                />
+              )}
             />
           </FormControl>
-        </Box>
+        </Stack>
       </Modal>
     </React.Fragment>
   )
