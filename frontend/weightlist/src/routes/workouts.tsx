@@ -52,7 +52,7 @@ function WorkoutsComponent() {
         <Box sx={{display: "flex"}}>
           <Typography variant="h3" sx={{m: 4}}>Workouts</Typography>
           <div className="spacer"></div>
-          <WorkoutModal/>
+          <WorkoutModal />
         </Box>
         <Grid2 container spacing={2}>
           {workouts ?

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "upper body"
+  },
+  {
+    "name": "lower body"
+  },
+  {
+    "name": "core"
+  },
+  {
+    "name": "chest"
+  },
+  {
+    "name": "shoulders"
+  },
+  {
+    "name": "biceps"
+  },
+  {
+    "name": "triceps"
+  },
+  {
+    "name": "back"
+  },
+  {
+    "name": "arms"
+  },
+  {
+    "name": "hamstrings"
+  },
+  {
+    "name": "glutes"
+  },
+  {
+    "name": "quads"
+  },
+  {
+    "name": "calves"
+  },
+  {
+    "name": "forearms"
+  },
+  {
+    "name": "traps"
+  },
+  {
+    "name": "lats"
+  },
+  {
+    "name": "push"
+  },
+  {
+    "name": "pull"
+  }
+]

@@ -16,23 +16,27 @@ public class ExerciseController {
 
     // Aggregate root
     // tag::get-aggregate-root[]
+    @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/exercises")
     List<Exercise> all() {
         return repository.findAll();
     }
     // end::get-aggregate-root[]
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @PostMapping("/exercises")
     Exercise newExercise(@RequestBody Exercise newExercise) {
         return repository.save(newExercise);
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/exercises/{id}")
     Exercise one(@PathVariable Long id) {
         return repository.findById(id.toString())
                 .orElseThrow(() -> new RuntimeException("Can't find exercise: " + id));
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @PutMapping("/exercises/{id}")
     Exercise replaceExercise(@RequestBody Exercise newExercise, @PathVariable Long id) {
         return repository.findById(id.toString())
@@ -49,6 +53,7 @@ public class ExerciseController {
                 });
     }
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @DeleteMapping("/exercises/{id}")
     void deleteExercise(@PathVariable Long id) {
         repository.deleteById(id.toString());
