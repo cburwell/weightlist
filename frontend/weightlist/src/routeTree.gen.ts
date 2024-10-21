@@ -15,7 +15,9 @@ import { Route as WorkoutsImport } from './routes/workouts'
 import { Route as SignupImport } from './routes/signup'
 import { Route as LoginImport } from './routes/login'
 import { Route as ExercisesImport } from './routes/exercises'
+import { Route as CreateExerciseImport } from './routes/create-exercise'
 import { Route as IndexImport } from './routes/index'
+import { Route as WorkoutsCreateImport } from './routes/workouts.create'
 
 // Create/Update Routes
 
@@ -39,9 +41,19 @@ const ExercisesRoute = ExercisesImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CreateExerciseRoute = CreateExerciseImport.update({
+  path: '/create-exercise',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const WorkoutsCreateRoute = WorkoutsCreateImport.update({
+  path: '/create',
+  getParentRoute: () => WorkoutsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -53,6 +65,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/create-exercise': {
+      id: '/create-exercise'
+      path: '/create-exercise'
+      fullPath: '/create-exercise'
+      preLoaderRoute: typeof CreateExerciseImport
       parentRoute: typeof rootRoute
     }
     '/exercises': {
@@ -83,59 +102,108 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkoutsImport
       parentRoute: typeof rootRoute
     }
+    '/workouts/create': {
+      id: '/workouts/create'
+      path: '/create'
+      fullPath: '/workouts/create'
+      preLoaderRoute: typeof WorkoutsCreateImport
+      parentRoute: typeof WorkoutsImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface WorkoutsRouteChildren {
+  WorkoutsCreateRoute: typeof WorkoutsCreateRoute
+}
+
+const WorkoutsRouteChildren: WorkoutsRouteChildren = {
+  WorkoutsCreateRoute: WorkoutsCreateRoute,
+}
+
+const WorkoutsRouteWithChildren = WorkoutsRoute._addFileChildren(
+  WorkoutsRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-exercise': typeof CreateExerciseRoute
   '/exercises': typeof ExercisesRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/workouts': typeof WorkoutsRoute
+  '/workouts': typeof WorkoutsRouteWithChildren
+  '/workouts/create': typeof WorkoutsCreateRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create-exercise': typeof CreateExerciseRoute
   '/exercises': typeof ExercisesRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/workouts': typeof WorkoutsRoute
+  '/workouts': typeof WorkoutsRouteWithChildren
+  '/workouts/create': typeof WorkoutsCreateRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/create-exercise': typeof CreateExerciseRoute
   '/exercises': typeof ExercisesRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/workouts': typeof WorkoutsRoute
+  '/workouts': typeof WorkoutsRouteWithChildren
+  '/workouts/create': typeof WorkoutsCreateRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/exercises' | '/login' | '/signup' | '/workouts'
+  fullPaths:
+    | '/'
+    | '/create-exercise'
+    | '/exercises'
+    | '/login'
+    | '/signup'
+    | '/workouts'
+    | '/workouts/create'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/exercises' | '/login' | '/signup' | '/workouts'
-  id: '__root__' | '/' | '/exercises' | '/login' | '/signup' | '/workouts'
+  to:
+    | '/'
+    | '/create-exercise'
+    | '/exercises'
+    | '/login'
+    | '/signup'
+    | '/workouts'
+    | '/workouts/create'
+  id:
+    | '__root__'
+    | '/'
+    | '/create-exercise'
+    | '/exercises'
+    | '/login'
+    | '/signup'
+    | '/workouts'
+    | '/workouts/create'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateExerciseRoute: typeof CreateExerciseRoute
   ExercisesRoute: typeof ExercisesRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
-  WorkoutsRoute: typeof WorkoutsRoute
+  WorkoutsRoute: typeof WorkoutsRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateExerciseRoute: CreateExerciseRoute,
   ExercisesRoute: ExercisesRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
-  WorkoutsRoute: WorkoutsRoute,
+  WorkoutsRoute: WorkoutsRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -151,6 +219,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/create-exercise",
         "/exercises",
         "/login",
         "/signup",
@@ -159,6 +228,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/create-exercise": {
+      "filePath": "create-exercise.tsx"
     },
     "/exercises": {
       "filePath": "exercises.tsx"
@@ -170,7 +242,14 @@ export const routeTree = rootRoute
       "filePath": "signup.tsx"
     },
     "/workouts": {
-      "filePath": "workouts.tsx"
+      "filePath": "workouts.tsx",
+      "children": [
+        "/workouts/create"
+      ]
+    },
+    "/workouts/create": {
+      "filePath": "workouts.create.tsx",
+      "parent": "/workouts"
     }
   }
 }

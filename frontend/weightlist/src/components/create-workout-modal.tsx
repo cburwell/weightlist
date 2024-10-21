@@ -6,7 +6,7 @@ import {
   InputLabel,
   ListItem,
   MenuItem,
-  Modal,
+  Modal, Paper,
   Select,
   SelectChangeEvent,
   Stack,
@@ -14,8 +14,9 @@ import {
   Typography
 } from "@mui/material";
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {Key, useEffect} from "react";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from '@mui/icons-material/Close';
 import {api} from "../../static/js/api";
 
 interface ChipData {
@@ -23,40 +24,80 @@ interface ChipData {
   label: string;
 }
 
-// @ts-ignore
-export default function WorkoutModal() {
+export default function WorkoutModal(workouts: Workout[]) {
+  // TODO: move to global store
+  const [tags, setTags] = React.useState<Tag[]>([]);
+  const [exercises, setExercises] = React.useState<Exercise[]>([]);
+
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [chipData, setChipData] = React.useState<readonly ChipData[]>([
-    {key: 0, label: 'Angular'},
-    {key: 1, label: 'jQuery'},
-    {key: 2, label: 'Polymer'},
-    {key: 3, label: 'React'},
-    {key: 4, label: 'Vue.js'},
-  ]);
-  const [exercise, setExercise] = React.useState('');
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [eid, setEid] = React.useState('');
+  // TODO: Change this to be selected exercises
+  const [exerciseIds, setExerciseIds] = React.useState<string[]>([]);
+  const [newWorkout, setNewWorkout] = React.useState<Workout>(
+    {
+      id: "",
+      name: "New Workout",
+      description: "",
+      exerciseData: [],
+      tags: []
+    } as Workout
+  );
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
-  const handleChipDelete = (chipToDelete: ChipData) => () => {
-    setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+  const handleChipDelete = (chipToDelete: string) => () => {
+    setNewWorkout({...newWorkout, exerciseData: newWorkout.exerciseData.filter((edata) => edata.eid !== chipToDelete)});
   };
 
-  const handleSelectChange = (event: SelectChangeEvent) => {
-    setExercise(event.target.value);
+  const handleDeleteExercise = (eid: string) => () => {
+    setNewWorkout({...newWorkout, exerciseData: newWorkout.exerciseData.filter((edata) => edata.id !== eid)});
   };
+
+  // Exercise select handler
+  const handleExerciseSelectChange = (event: SelectChangeEvent) => {
+    if (event) {
+      setEid(event.target.value);
+
+      setNewWorkout({...newWorkout, exerciseData: newWorkout.exerciseData.concat(
+          {
+            "id": event.target.value,
+            "name": getExerciseName(event.target.value),
+            "sets": "0",
+            "reps": "0"
+          })});
+    }
+  };
+
+// Generic input change handler
+  const handleInputChange = (e: any) => {
+    const {name, value} = e.target;
+    setNewWorkout({...newWorkout, [name]: value});
+  };
+
+  const getExerciseName = (eid: string): string => {
+    return exercises.filter((es) => es.id === eid).map(e => e.name)[0];
+  }
 
   useEffect(() => {
     let ignore = false;
+
     api.get<Tag[]>("http://localhost:8080/tags").then(result => {
-      console.log(result);
       if (!ignore) {
         setTags(result);
       }
     }, (err) => {
       console.error("Error occurred when fetching data: ", err);
     });
+
+    api.get<Exercise[]>("http://localhost:8080/exercises").then(result => {
+      if (!ignore) {
+        setExercises(result);
+      }
+    }, (err) => {
+      console.error("Error occurred when fetching data: ", err);
+    });
+
     return () => {
       ignore = true;
     }
@@ -77,7 +118,7 @@ export default function WorkoutModal() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "auto",
+          width: "600px",
           bgcolor: "background.paper",
           border: "2px solid #000",
           boxShadow: 24,
@@ -95,31 +136,47 @@ export default function WorkoutModal() {
               flexDirection: "column",
               gap: "40px",
             }}>
-            <TextField required label="Name" placeholder="Enter name..."/>
-            <TextField label="Description" placeholder="Enter description..."/>
-            <FormControl sx={{m: 1, minWidth: 120}}>
+            <TextField required name="name" label="Name" placeholder="Enter name..." onChange={handleInputChange}
+                       value={newWorkout.name}/>
+            <TextField name="description" label="Description" placeholder="Enter description..."
+                       onChange={handleInputChange} value={newWorkout.description}/>
+            <FormControl>
               <InputLabel id="exercise-label">Exercise</InputLabel>
               <Select
+                name="exerciseSelect"
                 labelId="exercise-select-label"
                 id="exercise-select"
-                value={exercise}
+                value={eid}
                 label="Add exercises to your list"
-                onChange={handleSelectChange}
+                onChange={handleExerciseSelectChange}
               >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={1}>Bicep curls</MenuItem>
-                <MenuItem value={2}>Squats</MenuItem>
-                <MenuItem value={3}>OHP</MenuItem>
+                {exercises.map((e) => {
+                  return (
+                    <MenuItem value={e.id} key={e.id}>{e.name}</MenuItem>
+                  )
+                })}
               </Select>
             </FormControl>
-            <Stack direction="row">
-              {chipData.map((data) => {
+            {/*TODO need to maintain a separate array to push values to in order to allow dupes */}
+            <Stack className="zebra">
+              {newWorkout.exerciseData.map((edata, ndx) => {
                 return (
-                  <ListItem key={data.key}>
+                  <ListItem key={ndx}>
+                    {ndx+1}:
+                    {edata.name} :
+                    <TextField name="sets" label="Sets" type="number" onChange={handleInputChange} value={newWorkout.exerciseData[ndx].sets}/> :
+                    <TextField name="reps" label="Reps" type="number" onChange={handleInputChange} value={newWorkout.exerciseData[ndx].reps}/> :
+                    <Button onClick={handleDeleteExercise(edata.id)}><CloseIcon /></Button>
+                  </ListItem>
+                );
+              })}
+            </Stack>
+            <Stack direction="row">
+              {exerciseIds.map((data) => {
+                return (
+                  <ListItem key={"db-" + (data as Key)}>
                     <Chip
-                      label={data.label}
+                      label={data}
                       onDelete={handleChipDelete(data)}
                     />
                   </ListItem>

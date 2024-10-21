@@ -23,6 +23,7 @@
     "@fontsource/roboto": "^5.1.0",
     "@mui/icons-material": "^6.1.2",
     "@mui/material": "^6.1.2",
+    "@mui/x-data-grid": "^7.21.0",
     "@tanstack/react-router": "^1.62.1",
     "@tanstack/router-devtools": "^1.62.1",
     "react": "^18.3.1",

@@ -12,14 +12,13 @@ import {
   CircularProgress,
   Grid2,
   List,
-  ListItem,
-  Modal,
+  ListItem, Stack, TextField,
   Typography
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 import {api} from "../../static/js/api";
-import WorkoutModal from "../components/create-workout-modal";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const Route = createFileRoute('/workouts')({
   component: WorkoutsComponent,
@@ -27,6 +26,7 @@ export const Route = createFileRoute('/workouts')({
 
 function WorkoutsComponent() {
   const [workouts, setWorkouts] = useState<Workout[] | null>(null);
+  const [newWorkout, setNewWorkout] = useState<Workout | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -46,13 +46,37 @@ function WorkoutsComponent() {
     console.log("createWorkout");
   }
 
+  const handleNewWorkout = () => {
+    setNewWorkout({
+      id: "",
+      name: "New Workout",
+      description: "",
+      exerciseData: [],
+      tags: []
+    } as Workout);
+
+    if (newWorkout) workouts?.unshift(newWorkout);
+    setWorkouts(workouts);
+  }
+
+  const handleDeleteExercise = (eid: string) => () => {
+    // setNewWorkout({...newWorkout, exerciseData: newWorkout.exerciseData.filter((edata) => edata.id !== eid)});
+  };
+
+  // Generic input change handler
+  const handleInputChange = (e: any) => {
+    const {name, value} = e.target;
+    // setNewWorkout({...newWorkout, [name]: value});
+  };
+
   return (
     <React.Fragment>
       <Box>
         <Box sx={{display: "flex"}}>
           <Typography variant="h3" sx={{m: 4}}>Workouts</Typography>
           <div className="spacer"></div>
-          <WorkoutModal />
+          {/*<WorkoutModal workouts={workouts} />*/}
+          <Button onClick={handleNewWorkout} sx={{height: 50, m: "auto"}}><AddIcon/> New Workout</Button>
         </Box>
         <Grid2 container spacing={2}>
           {workouts ?
@@ -77,11 +101,24 @@ function WorkoutsComponent() {
                           Exercises
                         </AccordionSummary>
                         <AccordionDetails>
-                          <List dense={true}>
-                            {workout.exerciseIds.map((id) => {
-                              return (<ListItem>{id}</ListItem>);
-                            })}
-                          </List>
+                          {/*<List dense={true}>*/}
+                          {/*  {workout.exerciseIds.map((id) => {*/}
+                          {/*    return (<ListItem>{id}</ListItem>);*/}
+                          {/*  })}*/}
+                            <Stack className="zebra">
+                              {workout.exerciseData.map((edata, eNdx) => {
+                                return (
+                                  <ListItem key={eNdx}>
+                                    {eNdx+1}:
+                                    {edata.name} :
+                                    <TextField name="sets" label="Sets" type="number" onChange={handleInputChange} value={workout.exerciseData[eNdx].sets}/> :
+                                    <TextField name="reps" label="Reps" type="number" onChange={handleInputChange} value={workout.exerciseData[eNdx].reps}/> :
+                                    <Button onClick={handleDeleteExercise(edata.id)}><CloseIcon /></Button>
+                                  </ListItem>
+                                );
+                              })}
+                            </Stack>
+                          {/*</List>*/}
                         </AccordionDetails>
                       </Accordion>
                       <Typography sx={{

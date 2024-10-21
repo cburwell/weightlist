@@ -1,6 +1,7 @@
 type Workout = {
+  id: string,
   name: string;
-  description: number;
-  exerciseIds: Array<String>;
-  tags: Array<String>;
+  description: string;
+  exerciseData: Record<string, string>[];
+  tags: Array<string>;
 }

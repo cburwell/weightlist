@@ -9,3 +9,7 @@ main {
 & .MuiToolbar-root {
     gap: 10px;
 }
+
+.zebra > *:nth-child(even){
+    backdrop-filter: brightness(50%);
+}
