@@ -45,7 +45,7 @@ public class ExerciseController {
                     exercise.setDescription(newExercise.getDescription());
                     exercise.setImageUrl(newExercise.getImageUrl());
                     exercise.setVideoUrl(newExercise.getVideoUrl());
-                    exercise.setCategory(newExercise.getCategory());
+                    exercise.setTags(newExercise.getTags());
                     return repository.save(exercise);
                 })
                 .orElseGet(() -> {

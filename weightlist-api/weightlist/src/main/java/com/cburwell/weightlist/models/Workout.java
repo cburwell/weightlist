@@ -12,13 +12,13 @@ public class Workout {
     private String name;
     private String description;
     private ArrayList<String> exerciseIds;
-    private ArrayList<String> tags;
+    private ArrayList<Tag> tags;
 
     public Workout() {
         this.name = "New Workout";
         this.description = "";
         this.exerciseIds = new ArrayList<String>();
-        this.tags = new ArrayList<String>();
+        this.tags = new ArrayList<Tag>();
     }
 
     public String getName() {
@@ -53,19 +53,19 @@ public class Workout {
         this.exerciseIds.remove(exerciseId);
     }
 
-    public ArrayList<String> getTags() {
+    public ArrayList<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<String> tags) {
+    public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
     }
 
-    public void addTag(String tag) {
+    public void addTag(Tag tag) {
         this.tags.add(tag);
     }
 
-    public void removeTag(String tag) {
+    public void removeTag(Tag tag) {
         this.tags.remove(tag);
     }
 

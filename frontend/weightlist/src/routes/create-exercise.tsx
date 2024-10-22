@@ -21,7 +21,6 @@ export const Route = createFileRoute('/create-exercise')({
 
 function CreateExerciseComponent() {
   const router = useRouter();
-  const navigate = useNavigate();
   const [exercise, setExercise] = useState<Exercise>({
     id: null,
     name: "New Exercise",
@@ -39,7 +38,7 @@ function CreateExerciseComponent() {
   };
 
   const handleTagSelect = (e: any, vs: Tag[]) => {
-    setExercise({...exercise, tags: vs.map((t) => { return t.id })});
+    setExercise({...exercise, tags: vs});
   }
 
   const handleClear = () => {
@@ -58,9 +57,7 @@ function CreateExerciseComponent() {
         // TODO: Implement user facing error handling
       }
       else {
-        console.log("Success!");
-        console.log(result as Exercise);
-        // navigate(({to:"/exercises"}));
+        console.log("Success!", result as Exercise);
         void router.navigate({to:"/exercises"});
       }
     });

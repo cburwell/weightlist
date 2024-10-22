@@ -3,5 +3,5 @@ type Workout = {
   name: string;
   description: string;
   exerciseData: Record<string, string>[];
-  tags: Array<string>;
+  tags: Array<Tag>;
 }

@@ -3,6 +3,8 @@ package com.cburwell.weightlist.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+
 @Document("exercises")
 public class Exercise {
     @Id
@@ -11,14 +13,14 @@ public class Exercise {
     private String description;
     private String imageUrl;
     private String videoUrl;
-    private String category;
+    private ArrayList<Tag> tags;
 
     public Exercise() {
         this.name = "New Exercise";
         this.description = "";
         this.imageUrl = "";
         this.videoUrl = "";
-        this.category = "";
+        this.tags = new ArrayList<Tag>();
     }
 
     public String getId() {
@@ -57,19 +59,19 @@ public class Exercise {
         this.videoUrl = videoUrl;
     }
 
-    public String getCategory() {
-        return category;
+    public ArrayList<Tag> getTags() {
+        return tags;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Exercise [id=%s, name=%s, description=%s, imageUrl=%s, videoUrl=%s, category=%s]",
-                this.id, this.name, this.description, this.imageUrl, this.videoUrl, this.category
+                "Exercise [id=%s, name=%s, description=%s, imageUrl=%s, videoUrl=%s, tags=%s]",
+                this.id, this.name, this.description, this.imageUrl, this.videoUrl, this.tags.toString()
         );
     }
 }

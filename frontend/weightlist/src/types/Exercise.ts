@@ -4,5 +4,5 @@ type Exercise = {
   description: string,
   imageUrl: string,
   videoUrl: string,
-  tags: Array<string>
+  tags: Array<Tag>
 }
