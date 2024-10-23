@@ -31,15 +31,15 @@ public class ExerciseController {
 
     @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/exercises/{id}")
-    Exercise one(@PathVariable Long id) {
-        return repository.findById(id.toString())
+    Exercise one(@PathVariable String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Can't find exercise: " + id));
     }
 
     @CrossOrigin(origins = "http://localhost:3001")
     @PutMapping("/exercises/{id}")
-    Exercise replaceExercise(@RequestBody Exercise newExercise, @PathVariable Long id) {
-        return repository.findById(id.toString())
+    Exercise replaceExercise(@RequestBody Exercise newExercise, @PathVariable String id) {
+        return repository.findById(id)
                 .map(exercise -> {
                     exercise.setName(newExercise.getName());
                     exercise.setDescription(newExercise.getDescription());
@@ -55,7 +55,7 @@ public class ExerciseController {
 
     @CrossOrigin(origins = "http://localhost:3001")
     @DeleteMapping("/exercises/{id}")
-    void deleteExercise(@PathVariable Long id) {
-        repository.deleteById(id.toString());
+    void deleteExercise(@PathVariable String id) {
+        repository.deleteById(id);
     }
 }

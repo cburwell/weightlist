@@ -32,15 +32,15 @@ public class TagController {
 
     @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping("/tags/{id}")
-    Tag one(@PathVariable Long id) {
-        return repository.findById(id.toString())
+    Tag one(@PathVariable String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Can't find tag: " + id));
     }
 
     @CrossOrigin(origins = "http://localhost:3001")
     @PutMapping("/tags/{id}")
-    Tag replaceTag(@RequestBody Tag newTag, @PathVariable Long id) {
-        return repository.findById(id.toString())
+    Tag replaceTag(@RequestBody Tag newTag, @PathVariable String id) {
+        return repository.findById(id)
                 .map(tag -> {
                     tag.setName(newTag.getName());
                     return repository.save(tag);
@@ -52,7 +52,7 @@ public class TagController {
 
     @CrossOrigin(origins = "http://localhost:3001")
     @DeleteMapping("/tags/{id}")
-    void deleteTag(@PathVariable Long id) {
-        repository.deleteById(id.toString());
+    void deleteTag(@PathVariable String id) {
+        repository.deleteById(id);
     }
 }
