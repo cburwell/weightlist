@@ -141,7 +141,7 @@ export function CreateExerciseComponent(props: any) {
           display: 'flex',
           flexDirection: 'column',
           gap: '40px',
-          width: '600px',
+          width: '800px',
           mx: 'auto',
           my: 4,
           padding: '2rem',
@@ -185,6 +185,7 @@ export function CreateExerciseComponent(props: any) {
           options={dbTags as Tag[]}
           getOptionLabel={(option) => option.name}
           onChange={handleTagSelect}
+          value={exercise ? exercise.tags : []}
           renderInput={(params) => (
             <TextField
               {...params}
