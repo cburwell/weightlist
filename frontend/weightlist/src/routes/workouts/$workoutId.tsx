@@ -15,7 +15,7 @@ function ViewWorkoutComponent() {
 
   return (
     <React.Fragment>
-      <CreateWorkoutComponent wid={workoutId} edit={false} />
+      <CreateWorkoutComponent wid={workoutId} editMode={false} />
     </React.Fragment>
   );
 }

@@ -19,6 +19,7 @@ A workout and exercise managing and tracking app.
 - [ ] Add workout tracker / logger
 - [ ] Implement user profiles
 - [ ] Auth
+- [ ] Validation
 
 ## Bugs
 ### Frontend

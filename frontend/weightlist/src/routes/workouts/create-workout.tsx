@@ -16,6 +16,7 @@ import {
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DeleteModal from "../../components/delete-modal";
 import CloseIcon from "@mui/icons-material/Close";
+import UpdateModal from "../../components/update-modal";
 
 export const Route = createFileRoute('/workouts/create-workout')({
   component: CreateWorkoutComponent
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/workouts/create-workout')({
 
 export function CreateWorkoutComponent(props: any) {
   const router = useRouter()
+  const [editMode, setEditMode] = React.useState<boolean>(props.editMode ?? false);
   const [workout, setWorkout] = useState<Workout>({
     id: null,
     name: 'New Workout',
@@ -94,12 +96,12 @@ export function CreateWorkoutComponent(props: any) {
     }
   }
 
-  const handleDelete = (eid: string | null) => {
-    if (eid) {
-      api.delete<Workout>(`http://localhost:8080/workouts/${eid}`).then(
+  const handleDelete = (wid: string | null) => {
+    if (wid) {
+      api.delete<Workout>(`http://localhost:8080/workouts/${wid}`).then(
         (result) => {
           if ((result as any).ok) {
-            console.log(`DELETE success ${eid}`);
+            console.log(`DELETE success ${wid}`);
             void router.navigate({to: '/workouts'});
           } else {
             console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText)
@@ -133,8 +135,8 @@ export function CreateWorkoutComponent(props: any) {
   useEffect(() => {
     let ignore = false
 
-    if (props.eid) {
-      api.get<Workout>(`http://localhost:8080/workouts/${props.eid}`).then(
+    if (props.wid) {
+      api.get<Workout>(`http://localhost:8080/workouts/${props.wid}`).then(
         (result) => {
           if (!(result as any).error) {
             setWorkout(result);
@@ -284,16 +286,21 @@ export function CreateWorkoutComponent(props: any) {
             />
           )}
         />
-        <Stack direction="row" spacing={4} sx={{mr: 2, ml: 'auto', pt: 6}}>
-          <Button variant="outlined" onClick={handleClear}>
+        <Stack direction="row" spacing={4} sx={{mr: 2, ml: 'auto', pt: 6, width: "100%", justifyContent: "flex-end" }}>
+          <Button variant="outlined" onClick={handleClear} sx={{ mr: "auto!important" }}>
             Clear
           </Button>
-          {workout.id &&
-              <DeleteModal initOpen={false} handleDelete={handleDelete} id={workout.id}></DeleteModal>
+          {workout.id ?
+            (
+              <React.Fragment>
+                <DeleteModal initOpen={false} handleDelete={handleDelete} id={workout.id}></DeleteModal>
+                <UpdateModal initOpen={false} handleUpdate={handleSubmit} id={workout.id}/>
+              </React.Fragment>
+            ) :
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
           }
-          <Button variant="contained" onClick={handleSubmit}>
-            {workout.id ? "Update" : "Submit"}
-          </Button>
         </Stack>
       </FormControl>
     </React.Fragment>

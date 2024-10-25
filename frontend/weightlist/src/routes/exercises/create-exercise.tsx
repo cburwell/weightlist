@@ -5,6 +5,7 @@ import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {api} from '../../../static/js/api'
 import DeleteModal from "../../components/delete-modal";
+import UpdateModal from "../../components/update-modal";
 
 export const Route = createFileRoute('/exercises/create-exercise')({
   component: CreateExerciseComponent,
@@ -84,8 +85,7 @@ export function CreateExerciseComponent(props: any) {
           }
         }
       )
-    }
-    else {
+    } else {
       void router.navigate({to: '/exercises'});
     }
   }
@@ -195,16 +195,21 @@ export function CreateExerciseComponent(props: any) {
             />
           )}
         />
-        <Stack direction="row" spacing={4} sx={{mr: 2, ml: 'auto', pt: 6}}>
-          <Button variant="outlined" onClick={handleClear}>
+        <Stack direction="row" spacing={4} sx={{mr: 2, ml: 'auto', pt: 6, width: "100%", justifyContent: "flex-end" }}>
+          <Button variant="outlined" onClick={handleClear} sx={{ mr: "auto!important" }}>
             Clear
           </Button>
-          {exercise.id &&
-              <DeleteModal initOpen={false} handleDelete={handleDelete} id={exercise.id}></DeleteModal>
+          {exercise.id ?
+            (
+              <React.Fragment>
+                <DeleteModal initOpen={false} handleDelete={handleDelete} id={exercise.id}></DeleteModal>
+                <UpdateModal initOpen={false} handleUpdate={handleSubmit} id={exercise.id}/>
+              </React.Fragment>
+            ) :
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
           }
-          <Button variant="contained" onClick={handleSubmit}>
-            {exercise.id ? "Update" : "Submit"}
-          </Button>
         </Stack>
       </FormControl>
     </React.Fragment>
