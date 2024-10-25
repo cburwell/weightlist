@@ -13,3 +13,7 @@ main {
 .zebra > *:nth-child(even){
     backdrop-filter: brightness(50%);
 }
+
+.zebra > *:nth-child(odd){
+    backdrop-filter: brightness(80%);
+}

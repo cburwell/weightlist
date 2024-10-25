@@ -135,7 +135,7 @@ function ExercisesComponent() {
                             my: 2,
                           }}
                         >
-                          Tags:{' '}
+                          Tags:
                           {exercise.tags
                             ? exercise.tags
                               .map((t): string => {

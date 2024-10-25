@@ -43,7 +43,7 @@ public class WorkoutController {
                 .map(workout -> {
                     workout.setName(newWorkout.getName());
                     workout.setDescription(newWorkout.getDescription());
-                    workout.setExerciseIds(newWorkout.getExerciseIds());
+                    workout.setExerciseData(newWorkout.getExerciseData());
                     workout.setTags(newWorkout.getTags());
                     return repository.save(workout);
                 })

@@ -36,8 +36,19 @@ export function CreateWorkoutComponent(props: any) {
 
   // Universal input handler
   const handleInputChange = (e: any) => {
-    const {name, value} = e.target
-    setWorkout({...workout, [name]: value})
+    if (e.target) {
+      const {name, value} = e.target
+      setWorkout({...workout, [name]: value})
+    }
+  }
+
+  const handleExerciseDataInputChange = (e: any, eNdx: number) => {
+    if (e.target) {
+      const {name, value} = e.target;
+      // @ts-ignore
+      workout.exerciseData[eNdx][name] = value;
+      setWorkout({ ...workout });
+    }
   }
 
   const handleTagSelect = (e: any, vs: Tag[]) => {
@@ -101,7 +112,6 @@ export function CreateWorkoutComponent(props: any) {
   }
 
   const handleSelectChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    console.log(`selected: ${event.target.value}`)
     let exToAdd = dbExercises.filter((e) => {
       return e.id === event.target.value
     })[0] as Exercise;
@@ -225,7 +235,7 @@ export function CreateWorkoutComponent(props: any) {
                   name="name"
                   label="Name"
                   type="text"
-                  value={edata.name}
+                  value={workout.exerciseData[eNdx].name}
                   sx={{ flexGrow: 1 }}
                   slotProps={{
                     input: {
@@ -237,16 +247,16 @@ export function CreateWorkoutComponent(props: any) {
                   name="sets"
                   label="Sets"
                   type="number"
-                  onChange={handleInputChange}
-                  value={edata.sets}
+                  onChange={(e) => { handleExerciseDataInputChange(e, eNdx)}}
+                  value={workout.exerciseData[eNdx].sets}
                   sx={{ width: "120px" }}
                 />
                 <TextField
                   name="reps"
                   label="Reps"
                   type="number"
-                  onChange={handleInputChange}
-                  value={edata.reps}
+                  onChange={(e) => { handleExerciseDataInputChange(e, eNdx)}}
+                  value={workout.exerciseData[eNdx].reps}
                   sx={{ width: "120px" }}
                 />
                 <Button

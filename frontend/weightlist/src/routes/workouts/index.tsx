@@ -20,6 +20,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddIcon from '@mui/icons-material/Add'
 import {api} from '../../../static/js/api'
 import CloseIcon from '@mui/icons-material/Close'
+import DeleteModal from "../../components/delete-modal";
 
 export const Route = createFileRoute('/workouts/')({
   component: WorkoutsComponent,
@@ -27,7 +28,25 @@ export const Route = createFileRoute('/workouts/')({
 
 function WorkoutsComponent() {
   const [workouts, setWorkouts] = useState<Workout[] | null>(null)
-  const [newWorkout, setNewWorkout] = useState<Workout | null>(null)
+
+  const handleDelete = (wid: string | null) => {
+    console.log(wid);
+    if (wid) {
+      api.delete<Workout>(`http://localhost:8080/workouts/${wid}`).then(
+        (result) => {
+          if ((result as any).ok) {
+            console.log(`DELETE success ${wid}`);
+            if (workouts) {
+              setWorkouts(workouts.filter((w) => {
+                return w.id !== wid;
+              }));
+            }
+          } else {
+            console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText)
+          }
+        });
+    }
+  }
 
   useEffect(() => {
     let ignore = false
@@ -46,32 +65,6 @@ function WorkoutsComponent() {
     }
   }, [])
 
-  function createWorkout() {
-    console.log('createWorkout')
-  }
-
-  const handleNewWorkout = () => {
-    setNewWorkout({
-      id: '',
-      name: 'New Workout',
-      description: '',
-      exerciseData: [],
-      tags: [],
-    } as Workout)
-
-    if (newWorkout) workouts?.unshift(newWorkout)
-    setWorkouts(workouts)
-  }
-
-  const handleDeleteExercise = (eid: string) => () => {
-    // setNewWorkout({...newWorkout, exerciseData: newWorkout.exerciseData.filter((edata) => edata.id !== eid)});
-  }
-
-  // Generic input change handler
-  const handleInputChange = (e: any) => {
-    const {name, value} = e.target;
-    // setNewWorkout({...newWorkout, [name]: value});
-  }
 
   return (
     <React.Fragment>
@@ -89,11 +82,26 @@ function WorkoutsComponent() {
             <AddIcon/> New Workout
           </Button>
         </Box>
-        <Grid2 container spacing={2}>
+        {workouts !== null && workouts.length === 0 && (
+          <React.Fragment>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="20px"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="60vh"
+              margin="auto"
+            >
+              <Typography>Nothing here yet! Add a new workout.</Typography>
+            </Box>
+          </React.Fragment>
+        )}
+        <Grid2 container spacing={2} sx={{mt: 4, pb: 20, mx: 'auto'}}>
           {workouts ? (
             workouts.map((workout, ndx): ReactNode => {
               return (
-                <Grid2 key={ndx} size={4} sx={{height: 400}}>
+                <Grid2 key={ndx} size={12} sx={{height: "auto"}}>
                   <Card variant="outlined" sx={{height: '100%'}}>
                     <CardContent className="mui-card-content">
                       <Typography
@@ -105,14 +113,14 @@ function WorkoutsComponent() {
                       <Typography
                         variant="body2"
                         sx={{
-                          height: 180,
-                          marginTop: 2,
-                          marginBottom: 2,
+                          height: 100,
+                          wordWrap: 'break-word',
+                          overflowY: 'auto',
+                          my: 2
                         }}
                       >
                         {workout.description}
                       </Typography>
-                      <div className="spacer"></div>
                       <Accordion sx={{marginTop: 2, marginBottom: 2}}>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon/>}
@@ -122,53 +130,82 @@ function WorkoutsComponent() {
                           Exercises
                         </AccordionSummary>
                         <AccordionDetails>
-                          {/*<List dense={true}>*/}
-                          {/*  {workout.exerciseIds.map((id) => {*/}
-                          {/*    return (<ListItem>{id}</ListItem>);*/}
-                          {/*  })}*/}
                           <Stack className="zebra">
                             {workout.exerciseData.map((edata, eNdx) => {
                               return (
-                                <ListItem key={eNdx}>
-                                  {eNdx + 1}:{edata.name} :
+                                <ListItem key={eNdx} sx={{ gap: 4 }}>
+                                  <TextField
+                                    name="name"
+                                    label="Name"
+                                    type="text"
+                                    value={workout.exerciseData[eNdx].name}
+                                    sx={{ flexGrow: 1 }}
+                                    slotProps={{
+                                      input: {
+                                        readOnly: true,
+                                      },
+                                    }}
+                                  />
                                   <TextField
                                     name="sets"
                                     label="Sets"
-                                    type="number"
-                                    onChange={handleInputChange}
+                                    type="text"
                                     value={workout.exerciseData[eNdx].sets}
-                                  />{' '}
-                                  :
+                                    sx={{ width: "120px", textAlign: "center" }}
+                                    slotProps={{
+                                      input: {
+                                        readOnly: true,
+                                      },
+                                    }}
+                                  />
                                   <TextField
                                     name="reps"
                                     label="Reps"
-                                    type="number"
-                                    onChange={handleInputChange}
+                                    type="text"
                                     value={workout.exerciseData[eNdx].reps}
-                                  />{' '}
-                                  :
-                                  <Button
-                                    onClick={handleDeleteExercise(edata.id)}
-                                  >
-                                    <CloseIcon/>
-                                  </Button>
+                                    sx={{ width: "120px" }}
+                                    slotProps={{
+                                      input: {
+                                        readOnly: true,
+                                      },
+                                    }}
+                                  />
                                 </ListItem>
                               )
                             })}
                           </Stack>
-                          {/*</List>*/}
                         </AccordionDetails>
                       </Accordion>
                       <Typography
+                        variant="body2"
                         sx={{
                           color: 'text.secondary',
-                          mb: 1.5,
-                          marginTop: 2,
-                          marginBottom: 2,
+                          my: 2,
                         }}
                       >
-                        Tags: {workout.tags.join(', ')}
+                        Tags:
+                        {workout.tags
+                          ? workout.tags
+                            .map((t): string => {
+                              return t.name
+                            })
+                            .join(', ')
+                          : ''}
                       </Typography>
+                      <Stack
+                        direction="row"
+                        spacing={4}
+                        sx={{justifyContent: 'center', pt: 6}}
+                      >
+                        <Button
+                          variant="outlined"
+                          component={Link}
+                          to={`/workouts/${workout.id}`}
+                        >
+                          View
+                        </Button>
+                        <DeleteModal initOpen={false} handleDelete={handleDelete} id={workout.id}></DeleteModal>
+                      </Stack>
                     </CardContent>
                   </Card>
                 </Grid2>

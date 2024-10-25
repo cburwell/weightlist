@@ -1,6 +1,6 @@
 # Weightlist
 
-Simple overview of use/purpose.
+A workout and exercise managing and tracking app.
 
 ## Description
 
@@ -10,17 +10,20 @@ A workout and exercise managing and tracking app.
 ### Frontend
 - [ ] Create pages should have edit / view mode
 - [ ] Refactor to use state manager
-- [ ] Implement user profiles
 - [ ] Add toasts
-- [ ] Auth
 
 ### Backend
+
+
+## Features
+- [ ] Add workout tracker / logger
+- [ ] Implement user profiles
 - [ ] Auth
 
 ## Bugs
 ### Frontend
 - [x] Updating exercise does not return to index page
   - This is expected behavior, just needs to have a toast to notify the user
-- [ ] Can't edit sets or reps on Create Workout page
+- [x] Can't edit sets or reps on Create Workout page
 
 ### Backend

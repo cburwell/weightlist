@@ -7,18 +7,23 @@ import java.util.ArrayList;
 
 @Document("workouts")
 public class Workout {
+    
     @Id
     private String id;
     private String name;
     private String description;
-    private ArrayList<String> exerciseIds;
+    private ArrayList<ExerciseData> exerciseData;
     private ArrayList<Tag> tags;
 
     public Workout() {
         this.name = "New Workout";
         this.description = "";
-        this.exerciseIds = new ArrayList<String>();
+        this.exerciseData = new ArrayList<ExerciseData>();
         this.tags = new ArrayList<Tag>();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -37,20 +42,20 @@ public class Workout {
         this.description = description;
     }
 
-    public ArrayList<String> getExerciseIds() {
-        return exerciseIds;
+    public ArrayList<ExerciseData> getExerciseData() {
+        return exerciseData;
     }
 
-    public void setExerciseIds(ArrayList<String> exerciseIds) {
-        this.exerciseIds = exerciseIds;
+    public void setExerciseData(ArrayList<ExerciseData> exerciseData) {
+        this.exerciseData = exerciseData;
     }
 
-    public void addExerciseId(String exerciseId) {
-        this.exerciseIds.add(exerciseId);
+    public void addExerciseData(ExerciseData exerciseData) {
+        this.exerciseData.add(exerciseData);
     }
 
-    public void removeExerciseId(String exerciseId) {
-        this.exerciseIds.remove(exerciseId);
+    public void removeExerciseData(ExerciseData exerciseData) {
+        this.exerciseData.remove(exerciseData);
     }
 
     public ArrayList<Tag> getTags() {
@@ -72,8 +77,8 @@ public class Workout {
     @Override
     public String toString() {
         return String.format(
-                "Workout [id=%s, name=%s, description=%s, exerciseIds=%s, tags=%s]",
-                this.id, this.name, this.description, this.exerciseIds.toString(), this.tags.toString()
+                "Workout [id=%s, name=%s, description=%s, exerciseData=%s, tags=%s]",
+                this.id, this.name, this.description, this.exerciseData.toString(), this.tags.toString()
         );
     }
 }
