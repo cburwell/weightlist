@@ -8,9 +8,11 @@ A workout and exercise managing and tracking app.
 
 ## TODO
 ### Frontend
-- [ ] Create pages should have edit / view mode
+- [x] Create pages should have edit / view mode
+  - Solved with update confirmation modal
 - [ ] Refactor to use state manager
-- [ ] Add toasts
+- [x] Add toasts
+
 
 ### Backend
 
@@ -20,11 +22,10 @@ A workout and exercise managing and tracking app.
 - [ ] Implement user profiles
 - [ ] Auth
 - [ ] Validation
+- [ ] Error handling
 
 ## Bugs
 ### Frontend
-- [x] Updating exercise does not return to index page
-  - This is expected behavior, just needs to have a toast to notify the user
-- [x] Can't edit sets or reps on Create Workout page
+
 
 ### Backend

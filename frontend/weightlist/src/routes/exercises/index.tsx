@@ -5,6 +5,7 @@ import {Box, Button, Card, CardContent, CircularProgress, Grid2, Stack, Typograp
 import AddIcon from '@mui/icons-material/Add'
 import {api} from '../../../static/js/api'
 import DeleteModal from "../../components/delete-modal";
+import { useSnackbar } from 'notistack';
 
 export const Route = createFileRoute('/exercises/')({
   component: ExercisesComponent,
@@ -12,6 +13,7 @@ export const Route = createFileRoute('/exercises/')({
 
 function ExercisesComponent() {
   const [exercises, setExercises] = useState<Exercise[] | null>(null)
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = (eid: string | null) => {
     if (eid) {
@@ -23,9 +25,11 @@ function ExercisesComponent() {
               setExercises(exercises.filter((e) => {
                 return e.id !== eid;
               }));
+              enqueueSnackbar(`Deleted exercise #${eid}`, { variant: "success" });
             }
           } else {
-            console.error("Error occurred when deleting exercise:", (result as any).status, (result as any).statusText)
+            console.error("Error occurred when deleting exercise:", (result as any).status, (result as any).statusText);
+            enqueueSnackbar("Delete error", { variant: "error" });
           }
         });
     }

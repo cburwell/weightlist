@@ -19,8 +19,8 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddIcon from '@mui/icons-material/Add'
 import {api} from '../../../static/js/api'
-import CloseIcon from '@mui/icons-material/Close'
 import DeleteModal from "../../components/delete-modal";
+import { useSnackbar } from 'notistack';
 
 export const Route = createFileRoute('/workouts/')({
   component: WorkoutsComponent,
@@ -28,6 +28,7 @@ export const Route = createFileRoute('/workouts/')({
 
 function WorkoutsComponent() {
   const [workouts, setWorkouts] = useState<Workout[] | null>(null)
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = (wid: string | null) => {
     console.log(wid);
@@ -40,9 +41,11 @@ function WorkoutsComponent() {
               setWorkouts(workouts.filter((w) => {
                 return w.id !== wid;
               }));
+              enqueueSnackbar(`Deleted exercise #${wid}`, { variant: "success" });
             }
           } else {
-            console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText)
+            console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText);
+            enqueueSnackbar(`Delete error`, { variant: "error" });
           }
         });
     }

@@ -6,13 +6,15 @@ import {useEffect, useState} from 'react'
 import {api} from '../../../static/js/api'
 import DeleteModal from "../../components/delete-modal";
 import UpdateModal from "../../components/update-modal";
+import { useSnackbar } from 'notistack';
 
 export const Route = createFileRoute('/exercises/create-exercise')({
   component: CreateExerciseComponent,
 })
 
 export function CreateExerciseComponent(props: any) {
-  const router = useRouter()
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [exercise, setExercise] = useState<Exercise>({
     id: null,
     name: 'New Exercise',
@@ -55,8 +57,10 @@ export function CreateExerciseComponent(props: any) {
         .then((result: any) => {
           if (!(result as any).error) {
             console.log('PUT Success!', result as Exercise)
+            enqueueSnackbar("Update successful!", { variant: "success" });
           } else {
-            console.error("Error occurred when updating exercise:", (result as any).status, (result as any).error)
+            console.error("Error occurred when updating exercise:", (result as any).status, (result as any).error);
+            enqueueSnackbar("Update error", { variant: "error" });
           }
         });
     } else {
@@ -66,8 +70,10 @@ export function CreateExerciseComponent(props: any) {
           if (!(result as any).error) {
             console.log('POST Success!', result as Exercise)
             void router.navigate({to: '/exercises'})
+            enqueueSnackbar("Submission successful", { variant: "success" });
           } else {
-            console.error("Error occurred when creating exercise:", (result as any).status, (result as any).error)
+            console.error("Error occurred when creating exercise:", (result as any).status, (result as any).error);
+            enqueueSnackbar("Submission error", { variant: "error" });
           }
         });
     }
@@ -80,8 +86,10 @@ export function CreateExerciseComponent(props: any) {
           if ((result as any).ok) {
             console.log(`DELETE success ${eid}`);
             void router.navigate({to: '/exercises'});
+            enqueueSnackbar("Delete successful!", { variant: "success" });
           } else {
-            console.error("Error occurred when deleting exercise:", (result as any).status, (result as any).statusText)
+            console.error("Error occurred when deleting exercise:", (result as any).status, (result as any).statusText);
+            enqueueSnackbar("Delete error", { variant: "error" });
           }
         }
       )

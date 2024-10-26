@@ -17,13 +17,15 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DeleteModal from "../../components/delete-modal";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateModal from "../../components/update-modal";
+import { useSnackbar } from 'notistack';
 
 export const Route = createFileRoute('/workouts/create-workout')({
   component: CreateWorkoutComponent
 })
 
 export function CreateWorkoutComponent(props: any) {
-  const router = useRouter()
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [editMode, setEditMode] = React.useState<boolean>(props.editMode ?? false);
   const [workout, setWorkout] = useState<Workout>({
     id: null,
@@ -77,9 +79,11 @@ export function CreateWorkoutComponent(props: any) {
         .put(`http://localhost:8080/workouts/${workout.id}`, {}, JSON.stringify(workout))
         .then((result: any) => {
           if (!(result as any).error) {
-            console.log('PUT Success!', result as Workout)
+            console.log('PUT Success!', result as Workout);
+            enqueueSnackbar("Update successful!", { variant: "success" });
           } else {
             console.error("Error occurred when updating workout:", (result as any).status, (result as any).error)
+            enqueueSnackbar("Update error", { variant: "error" });
           }
         });
     } else {
@@ -88,9 +92,11 @@ export function CreateWorkoutComponent(props: any) {
         .then((result: any) => {
           if (!(result as any).error) {
             console.log('POST Success!', result as Workout)
+            enqueueSnackbar("Submission successful!", { variant: "success" });
             void router.navigate({to: '/workouts'})
           } else {
-            console.error("Error occurred when creating workout:", (result as any).status, (result as any).error)
+            console.error("Error occurred when creating workout:", (result as any).status, (result as any).error);
+            enqueueSnackbar("Submission error", { variant: "error" });
           }
         });
     }
@@ -103,8 +109,10 @@ export function CreateWorkoutComponent(props: any) {
           if ((result as any).ok) {
             console.log(`DELETE success ${wid}`);
             void router.navigate({to: '/workouts'});
+            enqueueSnackbar("Delete successful!", { variant: "success" });
           } else {
-            console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText)
+            console.error("Error occurred when deleting workout:", (result as any).status, (result as any).statusText);
+            enqueueSnackbar("Delete error", { variant: "error" });
           }
         }
       )
