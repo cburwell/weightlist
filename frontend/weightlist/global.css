@@ -17,3 +17,12 @@ main {
 .zebra > *:nth-child(odd){
     backdrop-filter: brightness(80%);
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 400px;
+    justify-content: center;
+    align-items: center;
+}
