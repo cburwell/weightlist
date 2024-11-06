@@ -1,7 +1,9 @@
 import * as React from 'react'
-import {createFileRoute} from '@tanstack/react-router'
+import {createFileRoute, useRouter} from '@tanstack/react-router'
 import {Box, Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {SubmitHandler, useForm} from 'react-hook-form';
+import {api} from "../../static/js/api";
+import { useSnackbar} from "notistack";
 
 export const Route = createFileRoute('/signup')({
   component: SignupComponent,
@@ -13,8 +15,23 @@ interface IFormInput {
 }
 
 function SignupComponent() {
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data)
+    console.log(data);
+    api
+      .post('http://localhost:8080/signup', {}, JSON.stringify(data))
+      .then((result: any) => {
+        if (!(result as any).error) {
+          console.log('POST Success!', result)
+          enqueueSnackbar("Submission successful!", { variant: "success" });
+          void router.navigate({to: '/workouts'})
+        } else {
+          console.error("Error occurred when creating workout:", (result as any).status, (result as any).error);
+          enqueueSnackbar("Submission error", { variant: "error" });
+        }
+      });
   }
 
   const {

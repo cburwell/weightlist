@@ -1,15 +1,23 @@
 package com.cburwell.weightlist;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
@@ -22,7 +30,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class WebSecurityConfig { //extends WebSecurityConfiguration {
     @Bean
     SecurityFilterChain web(HttpSecurity http) throws Exception {
@@ -74,18 +82,32 @@ public class WebSecurityConfig { //extends WebSecurityConfiguration {
     AuthenticationFailureHandler failureHandler() {
         return new SimpleUrlAuthenticationFailureHandler("/login?error");
     }
-    //    Set up basic in-memory auth
-//    @Autowired
-//    public void configure(AuthenticationManagerBuilder auth)
-//            throws Exception {
-//        auth.inMemoryAuthentication().withUser("user")
-//                .password(passwordEncoder().encode("password")).roles("USER");
-//    }
-//
+
 //    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
+//    public UserDetailsService userDetailsService() {
+////        TODO: remove after testing
+//        UserDetails user =
+//                User.withDefaultPasswordEncoder()
+//                        .username("user")
+//                        .password("password")
+//                        .roles("USER")
+//                        .build();
+//
+//        return new InMemoryUserDetailsManager(user);
 //    }
+
+    //    Set up basic in-memory auth
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.inMemoryAuthentication().withUser("user")
+                .password(passwordEncoder().encode("password")).roles("USER");
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 //
 //    //    Enable HTTP security
 //    @Bean
