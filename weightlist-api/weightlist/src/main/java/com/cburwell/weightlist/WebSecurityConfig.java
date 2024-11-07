@@ -1,127 +1,72 @@
 package com.cburwell.weightlist;
 
+import com.cburwell.weightlist.security.jwt.AuthEntryPointJwt;
+import com.cburwell.weightlist.security.jwt.AuthTokenFilter;
+import com.cburwell.weightlist.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.AuthorizationManager;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import org.springframework.security.web.authentication.*;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig { //extends WebSecurityConfiguration {
-    @Bean
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
-        // @formatter:off
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/", "/home", "/login", "/signup").permitAll()
-                        .requestMatchers("/exercises", "/tags", "/workouts", "/logout").authenticated()
-                        .anyRequest().authenticated()
-                );
-//                .formLogin((form) -> form
-//                        .successHandler(mfaAuthenticationHandler)
-//                        .failureHandler(mfaAuthenticationHandler)
-//                )
-//                .exceptionHandling((exceptions) -> exceptions
-//                        .withObjectPostProcessor(new ObjectPostProcessor<ExceptionTranslationFilter>() {
-//                            @Override
-//                            public <O extends ExceptionTranslationFilter> O postProcess(O filter) {
-//                                filter.setAuthenticationTrustResolver(new MfaTrustResolver());
-//                                return filter;
-//                            }
-//                        })
-//                );
-        // @formatter:on
-        return http.build();
-    }
+public class WebSecurityConfig {
 
-    // for the second-factor
-    @Bean
-    AesBytesEncryptor encryptor() throws Exception {
-        KeyGenerator generator = KeyGenerator.getInstance("AES");
-        generator.init(128);
-        SecretKey key = generator.generateKey();
-        return new AesBytesEncryptor(key, KeyGenerators.secureRandom(12), AesBytesEncryptor.CipherAlgorithm.GCM);
-    }
-
-    // for the third-factor
-    @Bean
-    PasswordEncoder encoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Bean
-    AuthenticationSuccessHandler successHandler() {
-        return new SavedRequestAwareAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    AuthenticationFailureHandler failureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler("/login?error");
-    }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-////        TODO: remove after testing
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
-    //    Set up basic in-memory auth
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.inMemoryAuthentication().withUser("user")
-                .password(passwordEncoder().encode("password")).roles("USER");
+    UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-//
-//    //    Enable HTTP security
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> {
-//                            auth.requestMatchers("/", "/home", "/login", "/signup").permitAll();
-//                            auth.requestMatchers("/exercises", "/tags", "/workouts", "/logout").authenticated();
-//                        }
-//                )
-//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-////                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-////                .httpBasic(Customizer.withDefaults())
-//        return http.build();
-//    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/test/**").permitAll()
+                        .anyRequest().authenticated());
+
+        http.authenticationProvider(authenticationProvider());
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
 }

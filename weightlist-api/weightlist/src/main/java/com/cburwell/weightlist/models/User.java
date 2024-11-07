@@ -4,35 +4,43 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Document("users")
-public class User extends org.springframework.security.core.userdetails.User {
+public class User {
     @Id
-    private int id;
+    private String id;
 
     @NotBlank
     @Email
-    @Size(max=254)
+    @Size(max = 254)
     private String email;
 
-    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
+    @NotBlank
+    @Size(max = 20)
+    private String username;
+
+    @NotBlank
+    @Size(max = 120)
+    private String password;
+
+    @DBRef
+    private Set<Role> roles = new HashSet<>();
+
+    public User() {
     }
 
-    public User(String username, String password, String email, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
+    public User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
+        this.password = password;
     }
 
-    public User(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -42,5 +50,29 @@ public class User extends org.springframework.security.core.userdetails.User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
