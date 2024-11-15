@@ -3,10 +3,12 @@ package com.cburwell.weightlist.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigInteger;
+
 @Document("roles")
 public class Role {
     @Id
-    private int id;
+    private BigInteger id;
 
     private ERole name;
 
@@ -18,7 +20,7 @@ public class Role {
         this.name = name;
     }
 
-    public int getId() {
+    public BigInteger getId() {
         return id;
     }
 

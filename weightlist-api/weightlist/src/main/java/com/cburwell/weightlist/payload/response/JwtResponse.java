@@ -1,16 +1,17 @@
 package com.cburwell.weightlist.payload.response;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
-    private String id;
+    private BigInteger id;
     private String username;
     private String email;
     private List<String> roles;
 
-    public JwtResponse(String accessToken, String id, String username, String email, List<String> roles) {
+    public JwtResponse(String accessToken, BigInteger id, String username, String email, List<String> roles) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
@@ -34,11 +35,11 @@ public class JwtResponse {
         this.type = tokenType;
     }
 
-    public String getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

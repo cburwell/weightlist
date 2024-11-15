@@ -60,8 +60,10 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/test/**").permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers("/", "/home", "/login", "/signup").permitAll()
+                        .requestMatchers("/exercises", "/tags", "/workouts", "/logout").authenticated()
+                        .anyRequest().permitAll());
+//                        .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
 

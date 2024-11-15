@@ -2,15 +2,17 @@ package com.cburwell.weightlist.models;
 
 import org.springframework.data.annotation.Id;
 
+import java.math.BigInteger;
+
 public class ExerciseData {
     @Id
-    private String id;
+    private BigInteger id;
     private String eid;
     private String name;
     private String sets;
     private String reps;
 
-    public String getId() {
+    public BigInteger getId() {
         return id;
     }
 

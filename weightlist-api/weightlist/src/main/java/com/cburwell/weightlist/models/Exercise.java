@@ -3,12 +3,13 @@ package com.cburwell.weightlist.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 @Document("exercises")
 public class Exercise {
     @Id
-    private String id;
+    private BigInteger id;
     private String name;
     private String description;
     private String imageUrl;
@@ -23,7 +24,7 @@ public class Exercise {
         this.tags = new ArrayList<Tag>();
     }
 
-    public String getId() {
+    public BigInteger getId() {
         return id;
     }
 
