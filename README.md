@@ -8,10 +8,7 @@ A workout and exercise managing and tracking app.
 
 ## TODO
 ### Frontend
-- [x] Create pages should have edit / view mode
-  - Solved with update confirmation modal
-- [ ] Refactor to use state manager
-- [x] Add toasts
+- [ ] Write it!
 
 
 ### Backend
