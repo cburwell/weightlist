@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
-import {createFileRoute, Link} from '@tanstack/react-router'
+import {createFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {
   Accordion,
   AccordionDetails,
@@ -27,6 +27,7 @@ export const Route = createFileRoute('/workouts/')({
 })
 
 function WorkoutsComponent() {
+  const router = useRouter();
   const [workouts, setWorkouts] = useState<Workout[] | null>(null)
   const {enqueueSnackbar} = useSnackbar();
 
@@ -55,6 +56,10 @@ function WorkoutsComponent() {
     let ignore = false
     api.get<Workout[]>('http://localhost:8080/workouts').then(
       (result) => {
+        if ((result as any).status == 401) {
+          enqueueSnackbar("Request not authorized, redirecting to login", {variant:"error"});
+          void router.navigate({to: '/login'})
+        }
         if (!ignore) {
           setWorkouts(result)
         }

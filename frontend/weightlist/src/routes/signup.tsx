@@ -30,7 +30,7 @@ function SignupComponent() {
           if (!(result as any).error) {
             console.log('POST Success!', result)
             enqueueSnackbar("Submission successful!", {variant: "success"});
-            void router.navigate({to: '/workouts'})
+            void router.navigate({to: '/login'})
           } else {
             console.error("Error occurred when creating user:", (result as any).status, (result as any).error);
             enqueueSnackbar("Submission error", {variant: "error"});
