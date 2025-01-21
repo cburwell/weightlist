@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Header() {
   const links = [
     {"name": "Home", "link": "/"},
@@ -7,12 +9,12 @@ export default function Header() {
 
   return (
     <header>
-      <a href="/#"><img id="logo" src="./img/logos/white-logo.svg" alt="Weightlist logo"/></a>
-      <div class="spacer"></div>
+      <Link href="/#"><img id="logo" src="./img/logos/white-logo.svg" alt="Weightlist logo"/></Link>
+      <div className="spacer"></div>
       <nav>
         {links.map((link) => {
           return (
-            <a href={link.link}>{link.name}</a>
+            <Link href={link.link}>{link.name}</Link>
           );
         })}
       </nav>
